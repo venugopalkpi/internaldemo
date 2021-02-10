@@ -3,7 +3,7 @@ terraform {
     organization = "Test123456_24Nov"
 
     workspaces {
-      name = "databricks"
+      name = "internal-demo-databricks"
     }
   }
 }
