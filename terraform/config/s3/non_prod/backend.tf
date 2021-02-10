@@ -2,11 +2,10 @@
 
 terraform {
   backend "remote" {
-    organization = "thermofisher-demo"
+    organization = "Test123456_24Nov"
 
     workspaces {
-      name = "s3-nonprod-workspace"
+      name = "internal-demo"
     }
   }
 }
-

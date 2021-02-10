@@ -77,6 +77,7 @@ variable "arns" {
   default = ["arn:aws:iam::096654394133:role/TFS-Databricks-EC2Role-BIDL-DETier1"]
 }
 
+/*
 variable "bucket_name_project2" {
 }
 
@@ -95,4 +96,4 @@ variable "bucket_name_project5" {
 variable "bucket_name_cad_supplychain_raw_sap" {}
 variable "division_cad_supplychain_raw_sap" {}
 
-
+*/

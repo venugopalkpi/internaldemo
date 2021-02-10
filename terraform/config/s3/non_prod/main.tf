@@ -9,7 +9,7 @@ module "s3module" {
     division = var.division
 }
 
-
+/*
 module "s3module_project2" {
     source  = "../../../modules/s3"
     bucket_name = var.bucket_name_project2
@@ -45,3 +45,4 @@ module "s3_cad_supplychain_raw_sap" {
     division = var.division_cad_supplychain_raw_sap
 }
 
+*/
