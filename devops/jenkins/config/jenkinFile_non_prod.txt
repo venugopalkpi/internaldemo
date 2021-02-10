@@ -1,0 +1,91 @@
+properties([pipelineTriggers([githubPush()])])
+
+pipeline {
+
+    agent any
+
+    tools {
+       terraform "terraform-local"
+    }
+
+
+	stages {
+	 
+		stage('Checkout SCM') {	
+
+
+
+			steps {
+			    
+			    load "devops/jenkins/config/env_vars_non_prod.txt"        
+
+			    checkout([
+				    $class: 'GitSCM', 
+					branches: [[name: 'development']],
+					reference: 'project_repo',
+					extensions : [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'operations']],
+					userRemoteConfigs: [[
+						url: "${GITHUB_OPERATIONS_URL}",
+							credentialsId: "${GITHUB_CREDENTIAL_ID}",
+					]]
+				])
+			}
+		}
+		
+		stage('Terraform CLI') {	
+
+			when {
+			    allOf {
+            			expression { GIT_BRANCH == 'origin/development' }
+            			anyOf {
+					changeset "devops/**"
+					changeset "terraform/**"
+            			}
+            			
+
+            		    }
+			}
+			
+			steps {
+
+
+				echo 'Pulling branch...' + env.BRANCH_NAME
+				sh 'printenv'
+				
+			    
+
+				//withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', region:'ap-southeast-1', accessKeyVariable: 'AWS_ACCESS_KEY_ID'
+				//	, credentialsId: 'myawskey', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+				
+				withCredentials([string(credentialsId: "TFC_TOKEN_TEST", variable: 'TFC_TOKEN')]) {
+				
+				    cmd( """
+					cd $TEMPLATE_PATH_NON_PROD
+					terraform init  -backend-config="token=$TFC_TOKEN"
+
+				      """)
+
+				    cmd( """
+					cd $TEMPLATE_PATH_NON_PROD
+					terraform plan 
+
+				      """)
+				    
+				    cmd( """
+					cd $TEMPLATE_PATH_NON_PROD
+					terraform apply -auto-approve 
+
+				      """)
+
+				}
+				//}
+			}
+			
+			
+		}
+    }
+}
+
+def cmd(command) {
+    if (isUnix()) { sh "${command}" } else { bat "chcp 65001\n${command}"}
+}

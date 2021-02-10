@@ -1,0 +1,4 @@
+# put all configurations required for non production environment related.
+#env.GITHUB_OPERATIONS_URL="https://github.com/thermofisher/edp-operations.git"
+#env.GITHUB_CREDENTIAL_ID="GIT_?"
+#env.TEMPLATE_PATH_NON_PROD="operations/terraform/config/s3/prod"
