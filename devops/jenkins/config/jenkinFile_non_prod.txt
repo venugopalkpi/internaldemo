@@ -57,7 +57,7 @@ pipeline {
 				//withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', region:'ap-southeast-1', accessKeyVariable: 'AWS_ACCESS_KEY_ID'
 				//	, credentialsId: 'myawskey', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 				
-				withCredentials([string(credentialsId: "TFC_TOKEN_TEST", variable: 'TFC_TOKEN')]) {
+				withCredentials([string(credentialsId: "KPI_DEMO_TFC_TOKEN_TEST", variable: 'TFC_TOKEN')]) {
 				
 				    cmd( """
 					cd $TEMPLATE_PATH_NON_PROD
