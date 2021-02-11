@@ -37,10 +37,6 @@ pipeline {
 			when {
 			    allOf {
             			expression { GIT_BRANCH == 'origin/development' }
-            			anyOf {
-					changeset "devops/**"
-					changeset "terraform/**"
-            			}
             			
 
             		    }
