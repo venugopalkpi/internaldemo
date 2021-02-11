@@ -50,7 +50,7 @@ pipeline {
 
 
 				echo 'Pulling branch...' + env.BRANCH_NAME
-				sh 'printenv'
+				//sh 'printenv'
 				
 			    
 
@@ -60,19 +60,19 @@ pipeline {
 				withCredentials([string(credentialsId: "KPI_DEMO_TFC_TOKEN_TEST", variable: 'TFC_TOKEN')]) {
 				
 				    cmd( """
-					cd $TEMPLATE_PATH_NON_PROD
-					terraform init  -backend-config="token=$TFC_TOKEN"
+					cd %TEMPLATE_PATH_NON_PROD%
+					terraform init  -backend-config="token=%TFC_TOKEN%"
 
 				      """)
 
 				    cmd( """
-					cd $TEMPLATE_PATH_NON_PROD
+					cd %TEMPLATE_PATH_NON_PROD%
 					terraform plan 
 
 				      """)
 				    
 				    cmd( """
-					cd $TEMPLATE_PATH_NON_PROD
+					cd %TEMPLATE_PATH_NON_PROD%
 					terraform apply -auto-approve 
 
 				      """)
