@@ -38,6 +38,9 @@ module "s3module_project5" {
     division = var.division_cadsupplychain
 }
 
+module "test" {
+}
+
 module "s3_cad_supplychain_raw_sap" {
     source  = "../../../modules/s3"
     bucket_name = var.bucket_name_cad_supplychain_raw_sap
