@@ -2,5 +2,5 @@
 env.GITHUB_OPERATIONS_URL="https://github.com/venugopalkpi/internaldemo.git"
 env.GITHUB_CREDENTIAL_ID="GIT_Venu"
 env.TEMPLATE_PATH_NON_PROD="operations/terraform/config/s3/non_prod"
-env.TEMPLATE_PATH_DATABRICKS_NON_PROD="operations/terraform/config/databricks/non_prod"
+env.TEMPLATE_PATH_DATABRICKS_NON_PROD="operations/terraform/config/databricks/Non-prod"
 
