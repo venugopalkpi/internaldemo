@@ -25,7 +25,7 @@ variable "finance_contact" {
 }
 
 variable "application_owner" {
-    default = "prasada.martala@thermofisher.com"
+    default = "naveen.arigapudi@kpipartners.com"
 }
 
 variable "tranche" {
