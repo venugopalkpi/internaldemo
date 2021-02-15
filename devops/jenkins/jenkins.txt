@@ -146,12 +146,7 @@ pipeline {
 				
 				withCredentials([string(credentialsId: "${DATABRICKS_TOKEN_ID}", variable: 'DATABRICKS_TOKEN')]) {
 				cmd( """
-					#!/bin/bash
-					export PATH=$PATH:/usr/local/bin
-					#DATABRICKS_USERNAME='jitendra.punjabi'
-					echo "${env.DATABRICKS_URL} 
-					$DATABRICKS_TOKEN" | databricks configure --token
-					databricks workspace import_dir -o  dbk/src/fact/ ${env.DATABRICKS_WORKSPACE_PATH}
+					databricks workspace import_dir -o  dbk/src/ ${env.DATABRICKS_WORKSPACE_PATH}
 				      """)
 				 }
 
