@@ -148,6 +148,7 @@ pipeline {
 				//databricks workspace import_dir -o  dbk/src/ ${env.DATABRICKS_WORKSPACE_PATH}
 				withCredentials([string(credentialsId: "${DATABRICKS_TOKEN_ID}", variable: 'DATABRICKS_TOKEN')]) {
 				cmd( """
+					set DATABRICKS_HOST=%DATABRICKS_URL%
 					databricks jobs list
 					
 				      """)
