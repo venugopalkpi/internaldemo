@@ -40,6 +40,17 @@ pipeline {
 				load "devops/jenkins/env_vars.txt"
 			}
 	 	}
+
+		stage('Load Environment') {	
+
+			steps {
+
+			     load "deployment/internal/development/env_var.txt"
+			     print("${env.DATABRICKS_WORKSPACE_PATH}")
+
+			}
+			
+		}
 	 	
 	 	/*
 		stage('Terraform CLI') {	
@@ -84,16 +95,6 @@ pipeline {
 	 	
 	 	
 		
-		stage('Load Environment') {	
-
-			steps {
-
-			     load "deployment/internal/development/env_var.txt"
-			     print("${env.DATABRICKS_WORKSPACE_PATH}")
-
-			}
-			
-		}
 
 
 		stage('S3 json copy') {	
