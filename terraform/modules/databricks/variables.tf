@@ -14,7 +14,7 @@ variable "spark_version" {
 
 variable "autotermination_minutes" {
     type = number
-    default = 10
+    default = 60
 }
 
 variable "min_workers" {
