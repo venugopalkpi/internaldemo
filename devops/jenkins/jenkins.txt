@@ -1,0 +1,168 @@
+properties([pipelineTriggers([githubPush()])])
+// parameters required
+//ENV_VAR_PATH,FORCE_BUILD,OPERATION_BRANCH_NAME
+//operations/deployment/edp-consumable-supplychain-data/non_prod/env_var.txt
+
+//def skipStages = false
+
+pipeline {
+
+    agent any
+
+    tools {
+       terraform "terraform-local"
+    }
+
+
+	stages {
+	 	
+	 	stage('Initialization') {
+			steps {
+				print('branch')
+				print(GIT_BRANCH)
+				print('changeset size')
+				print(currentBuild.changeSets.size())
+				print('Force Build true/false')
+				print(FORCE_BUILD)
+
+				script{
+				if(GIT_BRANCH == 'origin/development' 
+					&& currentBuild.changeSets.size() == 0
+					&& FORCE_BUILD == 'false'
+					) {
+					print('Auto trigger build failure. No Changes.')
+					currentBuild.result = 'SUCCESS'
+					//skipStages = true
+					return;
+				}
+				}
+				
+				load "devops/jenkins/env_vars.txt"
+			}
+	 	}
+	 	
+	 	
+		stage('Terraform CLI') {	
+
+			when {
+			    allOf {
+            			expression { GIT_BRANCH == 'origin/development' }
+
+            		    }
+			}
+			
+			steps {
+
+				echo 'Pulling branch...' + env.BRANCH_NAME
+				
+				withCredentials([string(credentialsId: "KPI_DEMO_TFC_TOKEN_TEST", variable: 'TFC_TOKEN')]) {
+				
+				    cmd( """
+					cd %TEMPLATE_PATH_NON_PROD%
+					terraform init  -backend-config="token=%TFC_TOKEN%"
+
+				      """)
+
+				    cmd( """
+					cd %TEMPLATE_PATH_NON_PROD%
+					terraform plan 
+
+				      """)
+				    
+				    cmd( """
+					cd %TEMPLATE_PATH_NON_PROD%
+					terraform apply -auto-approve 
+
+				      """)
+
+				}
+				//}
+			}
+			
+			
+		}
+	 	
+	 	
+		
+		stage('Load Environment') {	
+
+			steps {
+
+			     load "deployment/internal/development/env_var.txt"
+			     print("${env.DATABRICKS_WORKSPACE_PATH}")
+
+			}
+			
+		}
+
+
+		stage('S3 json copy') {	
+
+			steps {
+			    
+			    //load "${env.ENV_VAR_PATH}"
+			    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding'
+			    	, region:"${env.AWS_REGION}", accessKeyVariable: 'AWS_ACCESS_KEY_ID'
+			    	, credentialsId: "${env.AWS_CREDENTIAL_ID}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+				    withAWS(region:"${env.AWS_REGION}") {
+				    s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true
+				    	, file:'s3/conf', bucket:"${env.JSON_BUCKET}", path:"${env.JSON_BUCKET_PATH}")
+				}
+			    }
+
+			}
+			
+		}
+
+		stage('S3 sql copy') {	
+
+			steps {
+			    
+			    //load "${env.ENV_VAR_PATH}"
+			    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding'
+			    	, region:"${env.AWS_REGION}", accessKeyVariable: 'AWS_ACCESS_KEY_ID'
+			    	, credentialsId: "${env.AWS_CREDENTIAL_ID}", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+				    withAWS(region:"${env.AWS_REGION}") {
+				    s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true
+				    	, file:'s3/src', bucket:"${env.SQL_BUCKET}", path:"${env.SQL_BUCKET_PATH}")
+				}
+			    }
+
+			}
+			
+		}
+
+		stage('Deploy Notebooks') {	
+			//when {
+			//	expression{ !skipStages }
+			//}
+			
+			steps {
+			 	
+			 	//load "${env.ENV_VAR_PATH}"
+			 	print("${env.DATABRICKS_WORKSPACE_PATH}")
+			 	
+			        //databricks jobs list
+				
+				withCredentials([string(credentialsId: "${DATABRICKS_TOKEN_ID}", variable: 'DATABRICKS_TOKEN')]) {
+				cmd( """
+					#!/bin/bash
+					export PATH=$PATH:/usr/local/bin
+					#DATABRICKS_USERNAME='jitendra.punjabi'
+					echo "${env.DATABRICKS_URL} 
+					$DATABRICKS_TOKEN" | databricks configure --token
+					databricks workspace import_dir -o  dbk/src/fact/ ${env.DATABRICKS_WORKSPACE_PATH}
+				      """)
+				 }
+
+			}
+			
+		}
+
+
+    }
+}
+
+def cmd(command) {
+    if (isUnix()) { sh "${command}" } else { bat "chcp 65001\n${command}"}
+}

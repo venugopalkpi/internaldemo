@@ -1,0 +1,2 @@
+env.GITHUB_OPERATIONS_URL="https://github.com/venugopalkpi/internaldemo.git"
+env.GITHUB_CREDENTIAL_ID="GIT_Venu" //"GitHub-Jitendra" //

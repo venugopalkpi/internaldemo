@@ -1,0 +1,3 @@
+{
+"oracle_query": "select * from purchase_order"
+}
