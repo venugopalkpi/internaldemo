@@ -41,7 +41,7 @@ pipeline {
 			}
 	 	}
 	 	
-	 	
+	 	/*
 		stage('Terraform CLI') {	
 
 			when {
@@ -131,6 +131,7 @@ pipeline {
 			}
 			
 		}
+		*/
 
 		stage('Deploy Notebooks') {	
 			//when {
@@ -143,10 +144,11 @@ pipeline {
 			 	print("${env.DATABRICKS_WORKSPACE_PATH}")
 			 	
 			        //databricks jobs list
-				
+				//databricks workspace import_dir -o  dbk/src/ ${env.DATABRICKS_WORKSPACE_PATH}
 				withCredentials([string(credentialsId: "${DATABRICKS_TOKEN_ID}", variable: 'DATABRICKS_TOKEN')]) {
 				cmd( """
-					databricks workspace import_dir -o  dbk/src/ ${env.DATABRICKS_WORKSPACE_PATH}
+					databricks jobs list
+					
 				      """)
 				 }
 
