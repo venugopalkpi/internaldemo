@@ -20,7 +20,7 @@ pipeline {
         
         stage('Differnce between two commits') {
             steps {
-                sh 'Hello World-2'
+                sh 'git diff HEAD^ HEAD'
             }
         }
     }
