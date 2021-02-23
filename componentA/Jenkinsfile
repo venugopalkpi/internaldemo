@@ -7,5 +7,11 @@ pipeline {
                 echo 'Hello World'
             }
         }
+        stage('Build only on incremental changes'){
+            when { changeset "*/componentA/**"} //Will execute your steps if any file change inside the componentA directory
+                steps {
+                    echo 'Build from changed files'
+                }
+        }
     }
 }
