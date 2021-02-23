@@ -17,6 +17,12 @@ pipeline {
                 echo 'Hello World-2'
             }
         }
+        
+        stage('Differnce between two commits') {
+            steps {
+                sh 'Hello World-2'
+            }
+        }
     }
 }
 
