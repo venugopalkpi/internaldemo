@@ -21,7 +21,10 @@ pipeline {
         
         stage('Build only on incremental changes from last 2 git commits'){
                 steps {
-                    sh 'git diff --name-only --diff-filter=AMR HEAD^^ HEAD'
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_Credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+    
+                    git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' aws s3 cp * s3://tf-bucket-04jan/test
+                    }
                 }
         }
     }
