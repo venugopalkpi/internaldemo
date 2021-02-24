@@ -22,7 +22,6 @@ pipeline {
         stage('Build only on incremental changes from last 2 git commits'){
                 steps {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_Credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-    
                     git diff --name-only --diff-filter=AMR HEAD^^ HEAD 
                     }
                 }
