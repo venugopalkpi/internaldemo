@@ -18,5 +18,11 @@ pipeline {
                     echo 'Build from changed files'
                 }
         }
+        
+        stage('Build only on incremental changes from last 2 git commits'){
+                steps {
+                    sh 'git diff --name-only --diff-filter=AMR HEAD^^ HEAD'
+                }
+        }
     }
 }
